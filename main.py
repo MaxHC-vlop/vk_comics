@@ -123,7 +123,7 @@ def main():
     env.read_env()
 
     group_id = env.str('GROUP_ID')
-    api_key = env.str('API_KEY')
+    api_key = env.str('VK_TOKEN')
 
     payload = {
         'access_token': api_key,
