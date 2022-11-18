@@ -128,7 +128,7 @@ def main():
     env = Env()
     env.read_env()
 
-    group_id = env.str('GROUP_ID')
+    group_id = env.str('VK_GROUP_ID')
     api_key = env.str('VK_TOKEN')
 
     while True:
