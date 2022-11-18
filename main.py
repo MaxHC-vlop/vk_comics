@@ -97,11 +97,11 @@ def save_image_vk_server(url, payload, download_serv):
     return content_response
 
 
-def post_image_vk_group(url, payload, ontent_response):
+def post_image_vk_group(url, payload, content_response):
     method = 'wall.post'
     
-    owner_id = ontent_response['owner_id']
-    id = ontent_response['id']
+    owner_id = content_response['owner_id']
+    id = content_response['id']
 
     attachments = f'photo{owner_id}_{id}'
     from_group = 1
