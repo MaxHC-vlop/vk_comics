@@ -19,7 +19,7 @@ VK_URL = 'https://api.vk.com/method/'
 VK_VERSION = '5.131'
 
 
-def fetch_comic_url(url):
+def get_random_comic_url(url):
     current_comic = 'info.0.json'
     current_url = urljoin(url, current_comic)
     response = requests.get(current_url)
@@ -135,7 +135,7 @@ def main():
         try:
             server_url = fetch_vk_server_url(VK_URL, payload)
 
-            comic_url = fetch_comic_url(IMG_URL)
+            comic_url = get_random_comic_url(IMG_URL)
             comic_content = get_comic_content(comic_url)
 
             image_url = comic_content['img']
