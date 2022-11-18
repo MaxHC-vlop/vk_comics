@@ -155,9 +155,9 @@ def main():
             )
 
             owner_id = response_content['owner_id']
-            id = response_content['id']
+            media_id = response_content['id']
 
-            attachments = f'photo{owner_id}_{id}'
+            attachments = f'photo{owner_id}_{media_id}'
             image_message = comic_content['alt']
             post_image_vk_group(
                 VK_URL, api_key, group_id, VK_VERSION,
