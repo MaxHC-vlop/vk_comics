@@ -67,8 +67,8 @@ def download_image_vk_server(url, filename):
             'photo': file,
         }
 
-        response = requests.post(url, files=files)
-        response.raise_for_status()
+    response = requests.post(url, files=files)
+    response.raise_for_status()
 
     server_response = response.json()
 
