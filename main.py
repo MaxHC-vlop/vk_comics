@@ -47,9 +47,14 @@ def get_comic_content(url):
     return response_content
 
 
-def fetch_vk_server_url(url, payload):
+def fetch_vk_server_url(url, api_key, group_id, vk_version):
     method = 'photos.getWallUploadServer'
     vk_url = urljoin(url, method)
+    payload = {
+        'access_token': api_key,
+        'v': vk_version,
+        'group_id': group_id
+    }
 
     response = requests.get(vk_url, params=payload)
     response.raise_for_status()
@@ -66,8 +71,8 @@ def download_image_vk_server(url, filename):
         files = {
             'photo': file,
         }
+        response = requests.post(url, files=files)
 
-    response = requests.post(url, files=files)
     response.raise_for_status()
 
     server_response = response.json()
@@ -75,15 +80,16 @@ def download_image_vk_server(url, filename):
     return server_response
 
 
-def save_image_vk_server(url, payload, download_serv):
+def save_image_vk_server(url, api_key, group_id, vk_version, photo, server, hash):
     method = 'photos.saveWallPhoto'
-    server_payload = {
-        'photo': download_serv['photo'],
-        'server': download_serv['server'],
-        'hash': download_serv['hash'],
+    data = {
+        'access_token': api_key,
+        'v': vk_version,
+        'group_id': group_id,
+        'photo': photo,
+        'server': server,
+        'hash': hash,
     }
-
-    data = payload | server_payload
 
     url = urljoin(url, method)
 
@@ -97,20 +103,20 @@ def save_image_vk_server(url, payload, download_serv):
     return response_content
 
 
-def post_image_vk_group(url, payload, response_content):
+def post_image_vk_group(url, api_key, group_id, vk_version, attachments, image_message):
     method = 'wall.post'
-    
-    owner_id = response_content['owner_id']
-    id = response_content['id']
-
-    attachments = f'photo{owner_id}_{id}'
+    owner_id = f'-{group_id}'
     from_group = 1
 
-    post_data = {
+    data = {
+        'access_token': api_key,
+        'v': vk_version,
+        'group_id': group_id,
         'from_group': from_group,
         'attachments': attachments,
+        'message': image_message,
+        'owner_id': owner_id
     }
-    data = payload | post_data
 
     url = urljoin(url, method)
 
@@ -125,15 +131,10 @@ def main():
     group_id = env.str('GROUP_ID')
     api_key = env.str('VK_TOKEN')
 
-    payload = {
-        'access_token': api_key,
-        'v': VK_VERSION,
-        'group_id': group_id
-    }
-
     while True:
         try:
-            server_url = fetch_vk_server_url(VK_URL, payload)
+            server_url = fetch_vk_server_url(
+                VK_URL, api_key, group_id, VK_VERSION)
 
             comic_url = get_random_comic_url(IMG_URL)
             comic_content = get_comic_content(comic_url)
@@ -145,12 +146,23 @@ def main():
 
             server_response = download_image_vk_server(server_url, filename)
 
-            response_content = save_image_vk_server(VK_URL, payload, server_response)
+            photo = server_response['photo']
+            server = server_response['server']
+            hash = server_response['hash']
+            response_content = save_image_vk_server(
+                VK_URL, api_key, group_id, VK_VERSION,
+                photo, server, hash
+            )
 
+            owner_id = response_content['owner_id']
+            id = response_content['id']
+
+            attachments = f'photo{owner_id}_{id}'
             image_message = comic_content['alt']
-            payload['message'] = image_message
-            payload['owner_id'] = f'-{group_id}'
-            post_image_vk_group(VK_URL, payload, response_content)
+            post_image_vk_group(
+                VK_URL, api_key, group_id, VK_VERSION,
+                attachments, image_message
+                )
 
             os.remove(filename)
 
