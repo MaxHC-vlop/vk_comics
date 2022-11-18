@@ -130,52 +130,48 @@ def main():
     group_id = env.str('VK_GROUP_ID')
     api_key = env.str('VK_TOKEN')
 
-    while True:
-        try:
-            server_url = fetch_vk_server_url(
-                VK_URL, api_key, group_id, VK_VERSION)
+    try:
+        server_url = fetch_vk_server_url(
+            VK_URL, api_key, group_id, VK_VERSION)
 
-            comic_url = get_random_comic_url(IMG_URL)
-            comic_content = get_comic_content(comic_url)
+        comic_url = get_random_comic_url(IMG_URL)
+        comic_content = get_comic_content(comic_url)
 
-            image_url = comic_content['img']
-            filename = get_filename(image_url)
+        image_url = comic_content['img']
+        filename = get_filename(image_url)
 
-            download_image(image_url, filename)
+        download_image(image_url, filename)
 
-            server_response = download_image_vk_server(server_url, filename)
+        server_response = download_image_vk_server(server_url, filename)
 
-            photo = server_response['photo']
-            server = server_response['server']
-            hash = server_response['hash']
+        photo = server_response['photo']
+        server = server_response['server']
+        hash = server_response['hash']
 
-            response_content = save_image_vk_server(
-                VK_URL, api_key, group_id, VK_VERSION,
-                photo, server, hash
+        response_content = save_image_vk_server(
+            VK_URL, api_key, group_id, VK_VERSION,
+            photo, server, hash
+        )
+
+        owner_id = response_content['owner_id']
+        media_id = response_content['id']
+        attachments = f'photo{owner_id}_{media_id}'
+        image_message = comic_content['alt']
+
+        post_image_vk_group(
+            VK_URL, api_key, group_id, VK_VERSION,
+            attachments, image_message
             )
 
-            owner_id = response_content['owner_id']
-            media_id = response_content['id']
-            attachments = f'photo{owner_id}_{media_id}'
-            image_message = comic_content['alt']
+    except requests.exceptions.HTTPError as errh:
+        logging.error(errh, exc_info=True)
 
-            post_image_vk_group(
-                VK_URL, api_key, group_id, VK_VERSION,
-                attachments, image_message
-                )
+    except requests.exceptions.ConnectionError as errc:
+        logging.error(errc, exc_info=True)
+        time.sleep(2)
 
-            break
-
-        except requests.exceptions.HTTPError as errh:
-            logging.error(errh, exc_info=True)
-
-        except requests.exceptions.ConnectionError as errc:
-            logging.error(errc, exc_info=True)
-            time.sleep(2)
-            continue
-
-        finally:
-            os.remove(filename)
+    finally:
+        os.remove(filename)
 
 
 if __name__ == '__main__':
