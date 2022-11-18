@@ -29,7 +29,7 @@ def get_random_comic_url(url):
 
     count_comic = response_content['num']
 
-    random_number = randrange(1, count_comic+1)
+    random_number = randrange(1, count_comic + 1)
     
     prefix = f'{random_number}/info.0.json'
 
