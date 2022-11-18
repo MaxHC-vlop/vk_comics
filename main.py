@@ -92,16 +92,16 @@ def save_image_vk_server(url, payload, download_serv):
 
     server_response = response.json()
 
-    content_response = server_response['response'][0]
+    response_content = server_response['response'][0]
 
-    return content_response
+    return response_content
 
 
-def post_image_vk_group(url, payload, content_response):
+def post_image_vk_group(url, payload, response_content):
     method = 'wall.post'
     
-    owner_id = content_response['owner_id']
-    id = content_response['id']
+    owner_id = response_content['owner_id']
+    id = response_content['id']
 
     attachments = f'photo{owner_id}_{id}'
     from_group = 1
@@ -145,12 +145,12 @@ def main():
 
             server_response = download_image_vk_server(server_url, filename)
 
-            content_response = save_image_vk_server(VK_URL, payload, server_response)
+            response_content = save_image_vk_server(VK_URL, payload, server_response)
 
-            message_image = comic_content['alt']
-            payload['message'] = message_image
+            image_message = comic_content['alt']
+            payload['message'] = image_message
             payload['owner_id'] = f'-{group_id}'
-            post_image_vk_group(VK_URL, payload, content_response)
+            post_image_vk_group(VK_URL, payload, response_content)
 
             os.remove(filename)
 
