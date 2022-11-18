@@ -27,9 +27,9 @@ def fetch_comic_url(url):
 
     response_content = response.json()
 
-    count_comicks = response_content['num']
+    count_comic = response_content['num']
 
-    random_number = randrange(1, count_comicks+1)
+    random_number = randrange(1, count_comic+1)
     
     prefix = f'{random_number}/info.0.json'
 
@@ -54,9 +54,9 @@ def fetch_vk_server_url(url, payload):
     response = requests.get(vk_url, params=payload)
     response.raise_for_status()
 
-    responce_content = response.json()
+    response_content = response.json()
 
-    server_url = responce_content['response']['upload_url']
+    server_url = response_content['response']['upload_url']
 
     return server_url
 
@@ -70,9 +70,9 @@ def download_image_vk_server(url, filename):
         response = requests.post(url, files=files)
         response.raise_for_status()
 
-    server_responce = response.json()
+    server_response = response.json()
 
-    return server_responce
+    return server_response
 
 
 def save_image_vk_server(url, payload, download_serv):
@@ -90,18 +90,18 @@ def save_image_vk_server(url, payload, download_serv):
     response = requests.post(url, data=data)
     response.raise_for_status()
 
-    server_responce = response.json()
+    server_response = response.json()
 
-    content_responce = server_responce['response'][0]
+    content_response = server_response['response'][0]
 
-    return content_responce
+    return content_response
 
 
-def post_image_vk_group(url, payload, ontent_responce):
+def post_image_vk_group(url, payload, ontent_response):
     method = 'wall.post'
     
-    owner_id = ontent_responce['owner_id']
-    id = ontent_responce['id']
+    owner_id = ontent_response['owner_id']
+    id = ontent_response['id']
 
     attachments = f'photo{owner_id}_{id}'
     from_group = 1
@@ -143,14 +143,14 @@ def main():
 
             download_image(image_url, filename)
 
-            server_responce = download_image_vk_server(server_url, filename)
+            server_response = download_image_vk_server(server_url, filename)
 
-            content_responce = save_image_vk_server(VK_URL, payload, server_responce)
+            content_response = save_image_vk_server(VK_URL, payload, server_response)
 
             message_image = comic_content['alt']
             payload['message'] = message_image
             payload['owner_id'] = f'-{group_id}'
-            post_image_vk_group(VK_URL, payload, content_responce)
+            post_image_vk_group(VK_URL, payload, content_response)
 
             os.remove(filename)
 
