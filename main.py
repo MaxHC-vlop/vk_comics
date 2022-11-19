@@ -66,7 +66,7 @@ def fetch_vk_server_url(url, api_key, group_id, vk_version):
     return server_url
 
 
-def download_image_vk_server(url, filename):
+def upload_image_vk_server(url, filename):
     with open(filename, 'rb') as file:
         files = {
             'photo': file,
@@ -142,7 +142,7 @@ def main():
 
         download_image(image_url, filename)
 
-        server_response = download_image_vk_server(server_url, filename)
+        server_response = upload_image_vk_server(server_url, filename)
 
         photo = server_response['photo']
         server = server_response['server']
