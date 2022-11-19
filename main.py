@@ -79,7 +79,7 @@ def upload_image_vk_server(url, filename):
     return server_response
 
 
-def save_image_vk_server(url, api_key, group_id, vk_version, photo, server, hash):
+def save_image_vk_server(url, api_key, group_id, vk_version, photo, server, image_hash):
     method = 'photos.saveWallPhoto'
     data = {
         'access_token': api_key,
@@ -87,7 +87,7 @@ def save_image_vk_server(url, api_key, group_id, vk_version, photo, server, hash
         'group_id': group_id,
         'photo': photo,
         'server': server,
-        'hash': hash,
+        'hash': image_hash,
     }
 
     url = urljoin(url, method)
@@ -146,11 +146,11 @@ def main():
 
         photo = server_response['photo']
         server = server_response['server']
-        hash = server_response['hash']
+        image_hash = server_response['hash']
 
         response_content = save_image_vk_server(
             VK_URL, api_key, group_id, VK_VERSION,
-            photo, server, hash
+            photo, server, image_hash
         )
 
         owner_id = response_content['owner_id']
