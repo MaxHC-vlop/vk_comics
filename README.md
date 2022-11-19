@@ -15,11 +15,11 @@ git clone git@github.com:MaxHC-vlop/vk_comics.git
  ```bash
 python3 -m venv env
  ```
-- Start the virtual environment:
+- Start the virtual environment :
 ```bash
 . env/bin/activate
 ```
-- Then use pip to install dependencies:
+- Then use pip to install dependencies :
 ```bash
 pip install -r requirements.txt
 ```
@@ -30,16 +30,16 @@ touch .env
 
 - Create variables in `.env` file :
 
-[API key here](https://dev.vk.com/api/access-token/implicit-flow-user)
+1. [Group ID here](https://regvk.com/id/)
 
-[Group ID here](https://regvk.com/id/)
+2. [API key here](https://dev.vk.com/api/access-token/implicit-flow-user)
 ```
-GROUP_ID='your_croup_id'
+VK_GROUP_ID='your_croup_id'
 
 VK_TOKEN='your_vk_token'
 ```
 ## Run
 
 ```bash
-python3 main.py
+python main.py
 ```
