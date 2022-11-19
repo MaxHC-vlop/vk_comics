@@ -81,7 +81,7 @@ def upload_image_vk_server(url, filename):
 
 def save_image_vk_server(url, api_key, group_id, vk_version, photo, server, image_hash):
     method = 'photos.saveWallPhoto'
-    data = {
+    payload = {
         'access_token': api_key,
         'v': vk_version,
         'group_id': group_id,
@@ -92,7 +92,7 @@ def save_image_vk_server(url, api_key, group_id, vk_version, photo, server, imag
 
     url = urljoin(url, method)
 
-    response = requests.post(url, data=data)
+    response = requests.post(url, data=payload)
     response.raise_for_status()
 
     server_response = response.json()
@@ -107,7 +107,7 @@ def post_image_vk_group(url, api_key, group_id, vk_version, attachments, image_m
     owner_id = f'-{group_id}'
     from_group = 1
 
-    data = {
+    payload = {
         'access_token': api_key,
         'v': vk_version,
         'group_id': group_id,
@@ -119,7 +119,7 @@ def post_image_vk_group(url, api_key, group_id, vk_version, attachments, image_m
 
     url = urljoin(url, method)
 
-    response = requests.post(url, data=data)
+    response = requests.post(url, data=payload)
     response.raise_for_status()
 
 
